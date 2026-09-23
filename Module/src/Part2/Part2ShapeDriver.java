@@ -1,45 +1,41 @@
-package Part1;
+package Part2;
+
+import Part1.Point;
 
 import java.util.ArrayList;
 
-public class Part1ShapeDriver {
+public class Part2ShapeDriver {
 
     public static void main(String[] args) {
 
-        // Create an array of at least 3 circles
         Circle[] circles = {
                 new Circle(new Point(0, 0), 5),
                 new Circle(new Point(2, 3), 3),
                 new Circle(new Point(-1, 4), 7)
         };
 
-        // Create an array of at least 3 rectangles
         Rectangle[] rectangles = {
                 new Rectangle(new Point(0, 5), new Point(4, 0)),
                 new Rectangle(new Point(-2, 6), new Point(3, 1)),
                 new Rectangle(new Point(1, 10), new Point(8, 4))
         };
 
-        // ArrayList to hold perimeter and area of every shape
         ArrayList<Double> computedList = new ArrayList<>();
 
-        // Calculate perimeter and area for each circle
         for (Circle circle : circles) {
-            computedList.add(Utility.perimeter(circle));
-            computedList.add(Utility.area(circle));
+            computedList.add(circle.perimeter());
+            computedList.add(circle.area());
         }
 
-        // Calculate perimeter and area for each rectangle
         for (Rectangle rectangle : rectangles) {
-            computedList.add(Utility.perimeter(rectangle));
-            computedList.add(Utility.area(rectangle));
+            computedList.add(rectangle.perimeter());
+            computedList.add(rectangle.area());
         }
 
-        // Find smallest and largest values
-        double[] smallLargeValues = smallLarge(computedList);
+        double[] values = smallLarge(computedList);
 
-        System.out.println("Smallest computed value: " + smallLargeValues[0]);
-        System.out.println("Largest computed value: " + smallLargeValues[1]);
+        System.out.println("Smallest computed value: " + values[0]);
+        System.out.println("Largest computed value: " + values[1]);
     }
 
     public static double[] smallLarge(ArrayList<Double> computedList) {

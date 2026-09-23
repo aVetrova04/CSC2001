@@ -1,17 +1,20 @@
 package Part2;
 
-import Part1.Point;
-import Part2.Circle;
-import Part2.Rectangle;
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.stream.Collectors;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import Part2.Circle;
+import Part1.Point;
+import Part2.Rectangle;
+import org.junit.Test;
 
 public class PartTwoTestCases
 {

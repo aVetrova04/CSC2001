@@ -19,7 +19,10 @@ public class Rectangle {
         return bottomRight;
     }
 
+    /*
     // setters
     public void setTopLeft(Point topLeft) {this.topLeft = topLeft;}
     public void setBottomRight(Point bottomRight) {this.bottomRight = bottomRight;}
+
+     */
 }

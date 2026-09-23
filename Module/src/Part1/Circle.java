@@ -19,6 +19,7 @@ public class Circle {
         return r;
     }
 
+    /*
     // setters
     public void setCenter(Point p) {
         this.p = p;
@@ -26,5 +27,7 @@ public class Circle {
     public void setRadius(double r) {
         this.r = r;
     }
+
+     */
 
 }
