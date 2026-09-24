@@ -38,6 +38,7 @@ public class Part2ShapeDriver {
         System.out.println("Largest computed value: " + values[1]);
     }
 
+    // Finds smallest and largest value in array
     public static double[] smallLarge(ArrayList<Double> computedList) {
 
         double smallest = computedList.get(0);
