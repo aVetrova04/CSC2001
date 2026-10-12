@@ -1,4 +1,4 @@
-package PART1;
+package PART2;
 
 import java.util.NoSuchElementException;
 

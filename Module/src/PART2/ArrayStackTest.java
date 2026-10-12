@@ -1,4 +1,4 @@
-package PART1;
+package PART2;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
