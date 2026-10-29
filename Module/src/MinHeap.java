@@ -1,4 +1,6 @@
+
 import java.util.NoSuchElementException;
+import java.util.Arrays;
 
 /**
  * A min-heap of ints stored in an array, as presented in lecture.
@@ -20,140 +22,241 @@ public class MinHeap {
     /** Number of values a new heap can hold before it has to grow. */
     public static final int DEFAULT_CAPACITY = 10;
 
-    private int[] heap;   // heap[0] is unused; the root is heap[1]
+    private int[] heap;   // the root is heap[1]
     private int size;     // values live in heap[1] ... heap[size]
 
-    /** Creates an empty heap with room for DEFAULT_CAPACITY values. */
+    /**
+     * Purpose: Create an empty heap with DEFAULT_CAPACITY spaces.
+     * Input: None.
+     * Output: A new empty MinHeap.
+     * Example: new MinHeap().size() returns 0.
+     */
     public MinHeap() {
         this(DEFAULT_CAPACITY);
     }
 
     /**
-     * Creates an empty heap with room for capacity values before it grows.
-     * (The array needs capacity + 1 slots, since index 0 is unused.)
-     * throws IllegalArgumentException if capacity is less than 1
+     * Purpose: Create an empty heap with the requested capacity.
+     * Input: capacity, the number of values the heap can initially hold.
+     * Output: A new empty MinHeap.
+     * Example: new MinHeap(5).isEmpty() returns true.
+     * Throws IllegalArgumentException if capacity is less than 1.
      */
     public MinHeap(int capacity) {
-        // TODO: validate capacity, then create the array
+        if (capacity < 1) {
+            throw new IllegalArgumentException(
+                    "Capacity must be at least 1.");
+        }
+
+        heap = new int[capacity + 1];
+        size = 0;
     }
 
     /**
-     * Builds a heap from values bottom-up in O(n): copies them into
-     * heap[1] .. heap[n] in the given order, then calls buildHeap().
-     * values itself must not be changed. (Make the array exactly big
-     * enough: n + 1 slots, but at least 2.)
-     * throws IllegalArgumentException if values is null
+     * Purpose: Build a min-heap from an existing array using bottom-up
+     * heap construction.
+     * Input: values, the integers to store.
+     * Output: A new MinHeap containing all the given integers.
+     * Example: new MinHeap(new int[]{3, 1, 2}).peek() returns 1.
+     * Throws IllegalArgumentException if values is null.
      */
     public MinHeap(int[] values) {
-        // TODO
+        if (values == null) {
+            throw new IllegalArgumentException(
+                    "Values array cannot be null.");
+        }
+
+        heap = new int[Math.max(values.length + 1, 2)];
+        size = values.length;
+
+        for (int i = 0; i < values.length; i++) {
+            heap[i + 1] = values[i];
+        }
+
+        buildHeap();
     }
 
     /**
-     * Adds value to the heap: puts it in the next open spot (index size + 1),
-     * then percolates it up until its parent is no larger.
-     * Grows the array first if it is full.
+     * Purpose: Insert a value while maintaining heap order.
+     * Input: value, the integer to insert.
+     * Output: None; the heap contains the new value.
+     * Example: Inserting 1 into a heap containing {3, 5}
+     * makes peek() return 1.
      */
     public void insert(int value) {
-        // TODO
+        if (size == heap.length - 1) {
+            grow();
+        }
+
+        size++;
+        heap[size] = value;
+        percolateUp(size);
     }
 
     /**
-     * Removes and returns the smallest value: the last leaf moves to the
-     * root, then percolates down until it is no larger than its children.
-     * throws NoSuchElementException if the heap is empty
+     * Purpose: Remove and return the smallest value.
+     * Input: None.
+     * Output: The minimum integer previously stored in the heap.
+     * Example: Removing the minimum from {2, 5, 7} returns 2.
+     * Throws NoSuchElementException if the heap is empty.
      */
     public int removeMin() {
-        // TODO
-        return 0;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Heap is empty.");
+        }
+
+        int minimum = heap[1];
+
+        heap[1] = heap[size];
+        size--;
+
+        if (size > 0) {
+            percolateDown(1);
+        }
+
+        return minimum;
     }
 
     /**
-     * Returns the smallest value without removing it.
-     * throws NoSuchElementException if the heap is empty
+     * Purpose: Return the smallest value without removing it.
+     * Input: None.
+     * Output: The minimum integer in the heap.
+     * Example: If the heap contains {2, 5, 7}, peek() returns 2.
+     * Throws NoSuchElementException if the heap is empty.
      */
     public int peek() {
-        // TODO
-        return 0;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Heap is empty.");
+        }
+
+        return heap[1];
     }
 
     /**
-     * Returns the number of values in the heap.
+     * Purpose: Report the number of values in the heap.
+     * Input: None.
+     * Output: The number of stored integers.
+     * Example: A heap containing three values has size() == 3.
      */
     public int size() {
-        // TODO
-        return 0;
+        return size;
     }
 
     /**
-     * Reports whether the heap has no values.
-     * return true if the heap is empty
+     * Purpose: Determine whether the heap contains any values.
+     * Input: None.
+     * Output: true if empty; otherwise false.
+     * Example: new MinHeap().isEmpty() returns true.
      */
     public boolean isEmpty() {
-        // TODO
-        return true;
+        return size == 0;
     }
 
     /**
-     * Returns the heap's values in array order (heap[1] ... heap[size]) as a
-     * new array of length size(). Changing the returned array must not
-     * change the heap.
-     * Example: after inserting 3, 5, 8, 10, 7, 12, 9 this returns
-     * {3, 5, 8, 10, 7, 12, 9}.
-     * (The insert order matches the heap array order in this example)
+     * Purpose: Return a copy of the heap's values in array order.
+     * Input: None.
+     * Output: A new array containing heap[1] through heap[size].
+     * Example: A heap with array order {3, 5, 8} returns {3, 5, 8}.
      */
     public int[] toArray() {
-        // TODO
-        return new int[0];
+        return Arrays.copyOfRange(heap, 1, size + 1);
     }
 
     /**
-     * Moves the value at index i up while it is smaller than its parent.
-     * (Stop when it reaches the root or its parent is <= it.)
+     * Purpose: Move a value upward until heap order is restored.
+     * Input: i, the index of the value to move.
+     * Output: None; the heap is reordered in place.
+     * Example: Inserting 1 into {3, 5} causes it to percolate
+     * upward to the root.
      */
     private void percolateUp(int i) {
-        // TODO
+        while (i > 1 && heap[i] < heap[i / 2]) {
+            swap(i, i / 2);
+            i = i / 2;
+        }
     }
 
     /**
-     * Moves the value at index i down, always swapping with the smaller
-     * child (the LEFT child if both children are equal), until it is no
-     * larger than its children or reaches a leaf.
+     * Purpose: Move a value downward until heap order is restored.
+     * Input: i, the index of the value to move.
+     * Output: None; the heap is reordered in place.
+     * Example: A value 9 at the root swaps with its smaller child 3.
+     * When children tie, the left child is selected.
      */
     private void percolateDown(int i) {
-        // TODO
+        while (2 * i <= size) {
+            int left = 2 * i;
+            int right = left + 1;
+            int smallerChild = left;
+
+            if (right <= size && heap[right] < heap[left]) {
+                smallerChild = right;
+            }
+
+            if (heap[i] <= heap[smallerChild]) {
+                break;
+            }
+
+            swap(i, smallerChild);
+            i = smallerChild;
+        }
     }
 
     /**
-     * Exchanges heap[a] and heap[b].
-     * a and b are the indices of the values to swap
+     * Purpose: Exchange two values in the heap array.
+     * Input: a and b, the indices of the values to exchange.
+     * Output: None; the two values exchange positions.
+     * Example: Swapping indices 1 and 2 in {0, 4, 7}
+     * exchanges 4 and 7.
      */
     private void swap(int a, int b) {
-        // TODO
-    }
-
-    /** Doubles the array's capacity, keeping every value at the same index. */
-    private void grow() {
-        // TODO
+        int temp = heap[a];
+        heap[a] = heap[b];
+        heap[b] = temp;
     }
 
     /**
-     * Bottom up heap construction.
-     * Restores heap order over heap[1] .. heap[size] by percolating down
-     * each non-leaf node, starting at the last one (index size / 2) and
-     * working back to the root (index 1).
+     * Purpose: Double the array's capacity without changing indices.
+     * Input: None.
+     * Output: None; the heap array has additional capacity.
+     * Example: An array with 11 slots grows to 22 slots.
+     */
+    private void grow() {
+        heap = Arrays.copyOf(heap, heap.length * 2);
+    }
+
+    /**
+     * Purpose: Restore heap order using bottom-up construction.
+     * Input: None; operates on the existing heap.
+     * Output: None; the heap satisfies the min-heap property.
+     * Example: Building from {3, 1, 2} produces {1, 3, 2}.
      */
     private void buildHeap() {
-        // TODO
+        for (int i = size / 2; i >= 1; i--) {
+            percolateDown(i);
+        }
     }
 
     /**
-     * Returns a new array holding values in ascending order: builds a
-     * MinHeap from values with the MinHeap(int[]) constructor, then calls
-     * removeMin() repeatedly. values itself must not be changed.
-     * throws IllegalArgumentException if values is null
+     * Purpose: Return a new array containing values in ascending order.
+     * Input: values, the integers to sort.
+     * Output: A new sorted array; the input remains unchanged.
+     * Example: heapSort(new int[]{3, 1, 2}) returns {1, 2, 3}.
+     * Throws IllegalArgumentException if values is null.
      */
     public static int[] heapSort(int[] values) {
-        // TODO
-        return values;
+        if (values == null) {
+            throw new IllegalArgumentException(
+                    "Values array cannot be null.");
+        }
+
+        MinHeap h = new MinHeap(values);
+        int[] result = new int[values.length];
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = h.removeMin();
+        }
+
+        return result;
     }
 }
