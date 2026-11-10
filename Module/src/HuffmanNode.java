@@ -1,13 +1,12 @@
+
 /**
- * A single node in a Huffman tree, implemented as a record.
+ * A single node in a Huffman tree.
  *
- * A HuffmanNode represents either a leaf (an actual character together
- * with its occurrence count) or an internal node created by combining two
- * subtrees during tree construction.
+ * Each node represents a character or an internal subtree.
  *
- * Records are immutable and give you charAscii(), freq(), left(), and
- * right() accessor methods automatically, along with
- * equals()/hashCode()/toString(). Do not rename the components below.
+ * Example:
+ * HuffmanNode node = new HuffmanNode(97, 5);
+ * This creates a leaf representing 'a' with frequency 5.
  */
 public record HuffmanNode(int charAscii, int freq, HuffmanNode left, HuffmanNode right)
         implements Comparable<HuffmanNode> {
@@ -22,36 +21,57 @@ public record HuffmanNode(int charAscii, int freq, HuffmanNode left, HuffmanNode
     }
 
     /**
-     * Returns true if the tree rooted at node a comes before the tree
-     * rooted at node b, false otherwise.
-     *
-     * A node "comes before" another if its frequency count is smaller.
-     * Ties are broken using the ASCII value of the character: the node
-     * with the smaller ASCII value comes first.
+     * Purpose: Determines whether node a comes before node b.
+     * Parameters: Two HuffmanNode objects.
+     * Returns: True if a has a smaller frequency, or the same frequency
+     *          and a smaller ASCII value.
+     * Example: comesBefore(new HuffmanNode(100, 5),
+     *                     new HuffmanNode(107, 5)) returns true.
      */
     public static boolean comesBefore(HuffmanNode a, HuffmanNode b) {
-        // TODO: implement
+        if (a.freq() < b.freq()) {
+            return true;
+        }
+
+        if (a.freq() == b.freq() && a.charAscii() < b.charAscii()) {
+            return true;
+        }
+
         return false;
     }
 
     /**
-     * Creates and returns a new internal HuffmanNode with a and b as its
-     * two children.
-     *
-     * The child for which comesBefore() is true goes on the left, the
-     * other goes on the right. The new node's frequency is the sum of a's
-     * and b's frequencies. The new node's charAscii value is the smaller
-     * of a's and b's charAscii values (used to break ties later on).
+     * Purpose: Combines two Huffman subtrees into one internal node.
+     * Parameters: Two HuffmanNode objects.
+     * Returns: A new parent node containing both children.
+     * Example: combine(new HuffmanNode(97, 2),
+     *                  new HuffmanNode(98, 3)).
      */
     public static HuffmanNode combine(HuffmanNode a, HuffmanNode b) {
-        // TODO: implement
-        return null;
+        HuffmanNode leftChild;
+        HuffmanNode rightChild;
+
+        if (comesBefore(a, b)) {
+            leftChild = a;
+            rightChild = b;
+        } else {
+            leftChild = b;
+            rightChild = a;
+        }
+
+        int totalFreq = a.freq() + b.freq();
+        int smallestAscii = Math.min(a.charAscii(), b.charAscii());
+
+        return new HuffmanNode(
+                smallestAscii,
+                totalFreq,
+                leftChild,
+                rightChild
+        );
     }
 
     /**
-     * Natural ordering consistent with comesBefore(), so that HuffmanNode
-     * objects can be stored directly in a sorted structure (e.g. a
-     * PriorityQueue or a sorted List) while building the tree.
+     * Natural ordering consistent with comesBefore().
      */
     @Override
     public int compareTo(HuffmanNode other) {
